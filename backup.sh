@@ -10,7 +10,7 @@ ORIGENES=(
 )
 NOMBRE_BACKUP="backup-$FECHA.tar.gz"
 DESTINO="$HOME/backup/$NOMBRE_BACKUP"
-
+ACTUAL=$(pwd)
 mkdir -p "$HOME/backup"
 
 tar -czf "$DESTINO" "${ORIGENES[@]}"
@@ -22,3 +22,13 @@ fi
 
 cd "$HOME/backup"
 ls -tp | grep 'backup-.*\.tar\.gz$' | tail -n +6 | xargs -I {} rm -- {}
+
+cd "$ACTUAL"
+
+python3 drive.py
+
+if [ $? -eq 0 ]; then
+    echo "Backup subido exitosamente"
+else
+    echo "Error al subir el backup"
+fi

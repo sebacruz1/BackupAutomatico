@@ -13,9 +13,13 @@ backup_log.txt
 
 # Ignorar configuración personal de rclone (muy importante)
 credentials.json
+token.json
+# Ignorar archivos de configuración de entornos virtuales
+.env
+# Ignorar archivos de configuración de Python
 
 .venv
-
+__pycache__/
 # Ignorar archivos temporales
 *.swp
 *.tmp
