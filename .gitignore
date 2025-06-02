@@ -1,0 +1,26 @@
+# Ignorar archivos de backup comprimidos
+*.tar.gz
+*.zip
+
+# Ignorar carpetas de backups locales
+Backups/
+backups/
+backup_*/
+
+# Ignorar logs
+*.log
+backup_log.txt
+
+# Ignorar configuración personal de rclone (muy importante)
+credentials.json
+
+.venv
+
+# Ignorar archivos temporales
+*.swp
+*.tmp
+*.bak
+
+# macOS cache files
+.DS_Store
+
