@@ -55,10 +55,10 @@ pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-
 3. Luego, subirá automáticamente ese archivo a Google Drive mediante:
 
 ```bash
-python3 subir_backup.py
+python3 drive.py
 ```
+(Esto se puede desactivar comentando/borrando la linea del 28 de backup.sh)
 
-(O bien, el Bash puede llamarlo automáticamente al final.)
 
 ---
 ## 🕒 Automatización con cron
@@ -76,7 +76,7 @@ crontab -e
 
 ## 📁 Estructura del repositorio
 
-.
+```bash
 ├── backup.sh            # Script que crea el archivo comprimido
 ├── subir_backup.py      # Script en Python que sube el archivo a Google Drive
 ├── credentials.json     # Tus credenciales (NO subir al repositorio)
@@ -105,4 +105,12 @@ Puedes modificar qué carpetas incluir editando `ORIGENES` en `backup.sh`.
 
 ## 📌 Licencia
 
-Este proyecto es de uso libre. Si lo mejoras, ¡haz un fork y compártelo! 🚀
+The MIT License (MIT)
+Copyright © 2025 <copyright holders>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Fork this project to create your own MIT license that you can always link to.
