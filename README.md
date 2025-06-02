@@ -70,13 +70,12 @@ Abre tu crontab con:
 ```bash
 crontab -e
 
-0 3 * * * /Users/Ruta/Al/Script/backup.sh >> /Users/Ruta/Al/Backup//cron_backup.log 2>&1
-
+0 3 * * * /Users/Ruta/Al/Script/backup.sh >> /Users/Ruta/Al/Backup/cron_backup.log 2>&1
+```
 ---
 
 ## 📁 Estructura del repositorio
 
-```
 .
 ├── backup.sh            # Script que crea el archivo comprimido
 ├── subir_backup.py      # Script en Python que sube el archivo a Google Drive
