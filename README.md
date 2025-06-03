@@ -33,7 +33,7 @@ pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-
 4. Crea credenciales del tipo **OAuth client ID**:
    - Tipo: "Escritorio"
    - Descarga el archivo `credentials.json` y guárdalo en la misma carpeta del proyecto.
-5. Ejecuta por primera vez `quickstart.py` o `subir_backup.py` para autorizar tu cuenta. Esto generará el archivo `token.json`.
+5. Ejecuta por primera vez `quickstart.py` o `drive.py` para autorizar tu cuenta. Esto generará el archivo `token.json`.
 
 **⚠️ Importante:**  
 - El archivo `token.json` guarda tu sesión y no debes compartirlo.
