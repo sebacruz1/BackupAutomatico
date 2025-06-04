@@ -79,6 +79,8 @@ crontab -e
 
 0 3 * * * /Users/Ruta/Al/Script/backup.sh >> /Users/Ruta/Al/Backup/cron_backup.log 2>&1
 ```
+Esto hará que tu script se ejecute todos los dias a las 3AM 
+
 ---
 
 ## 📁 Estructura del repositorio
