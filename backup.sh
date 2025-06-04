@@ -1,5 +1,7 @@
 #!/bin/bash
 
+clear
+echo "-----------------------------------"
 FECHA=$(date +%d-%m-%Y-%H-%M) 
 ORIGENES=(
     "$HOME/.ssh"
@@ -13,6 +15,7 @@ DESTINO="$HOME/backup/$NOMBRE_BACKUP"
 ACTUAL=$(pwd)
 mkdir -p "$HOME/backup"
 
+
 tar -czf "$DESTINO" "${ORIGENES[@]}"
 if [ $? -eq 0 ]; then
     echo "Backup creado exitosamente en $DESTINO"
@@ -21,14 +24,17 @@ else
 fi
 
 cd "$HOME/backup"
-ls -tp | grep 'backup-.*\.tar\.gz$' | tail -n +6 | xargs -I {} rm -- {}
+ls -tp | grep 'backup-.*\.tar\.gz$' | tail -n +2 | xargs -I {} rm -- {}
 
-cd "$ACTUAL"
-
+source /Users/seba/Documents/BackupAutomatico/.venv/bin/activate
+cd /Users/seba/Documents/BackupAutomatico || exit
 python3 drive.py
 
 if [ $? -eq 0 ]; then
     echo "Backup subido exitosamente"
+    python3 sendmail.py
 else
     echo "Error al subir el backup"
 fi
+
+echo "-----------------------------------"
