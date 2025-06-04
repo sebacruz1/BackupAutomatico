@@ -61,6 +61,13 @@ python3 drive.py
 
 
 ---
+## 📩 Envío de correo de confirmación
+
+Si configuras tu dirección y contraseña de correo en el archivo `.env`, el script enviará automáticamente un correo de confirmación al completar el respaldo.  
+Esto te permite recibir una notificación directa cada vez que se realiza un backup exitoso.
+
+
+---
 ## 🕒 Automatización con cron
 
 Puedes programar este script para que se ejecute automáticamente todos los días a las 3:00 AM con `cron`.
@@ -81,6 +88,8 @@ crontab -e
 ├── subir_backup.py      # Script en Python que sube el archivo a Google Drive
 ├── credentials.json     # Tus credenciales (NO subir al repositorio)
 ├── token.json           # Se genera automáticamente después de autenticar
+├── sendmail.py          # Script para enviar notificacion de backup realizado
+├── .env                 # DATOS PRIVADOS PARA EL MAIL (NO SUBIR AL REPO)
 ├── .gitignore           # Ignora archivos sensibles
 └── README.md            # Este archivo
 ```
