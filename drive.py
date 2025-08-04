@@ -8,7 +8,7 @@ from googleapiclient.http import MediaFileUpload
 from datetime import datetime
 import os
 
-SCOPES = ['https://www.googleapis.com/auth/drive.file']
+SCOPES = ['https://www.googleapis.com/auth/drive.file'] 
 
 def autenticar():
     creds = None
