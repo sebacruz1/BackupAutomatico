@@ -8,6 +8,8 @@ Este proyecto contiene un script Bash y un script Python que juntos permiten:
   - `$HOME/Downloads`
   - `$HOME/.zsh_history`
   - `$HOME/.zshrc`
+  - `$HOME/.vimrc`
+
 - Crear un archivo `.tar.gz` con la fecha y hora actual.
 - Subir ese archivo a tu cuenta de **Google Drive**, dentro de una carpeta llamada `Backups`.
 
@@ -20,7 +22,7 @@ Este proyecto contiene un script Bash y un script Python que juntos permiten:
 - Paquetes necesarios:
 
 ```bash
-pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
+pip install -r requirements.txt
 ```
 
 ---
@@ -57,7 +59,7 @@ pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-
 ```bash
 python3 drive.py
 ```
-(Esto se puede desactivar comentando/borrando la linea del 28 de backup.sh)
+(Esto se puede desactivar)
 
 
 ---
