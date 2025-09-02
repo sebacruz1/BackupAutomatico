@@ -3,6 +3,7 @@ from __future__ import print_function
 import os
 import time
 from datetime import datetime
+from tqdm import tqdm
 
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -55,7 +56,6 @@ def subir_a_drive(ruta_archivo):
 
     carpeta_id = buscar_o_crear_carpeta('Backups', service)
 
-    # Subida reanudable en chunks (1 MiB para máxima robustez)
     media = MediaFileUpload(
         ruta_archivo,
         mimetype='application/gzip',
@@ -74,11 +74,18 @@ def subir_a_drive(ruta_archivo):
         try:
             request = iniciar_sesion()
             response = None
-            ultimo_pct = -1
-            while response is None:
-                status, response = request.next_chunk(num_retries=5)
-            print(f"Backup subido. ID: {response.get('id')}")
-            break  # éxito
+            with tqdm(total=tam, unit='B', unit_scale=True, desc="Subiendo", ncols=80) as pbar:
+                bytes_subidos = 0
+                while response is None:
+                    status, response = request.next_chunk(num_retries=5)
+                    if status:
+                        nuevos_bytes = int(status.progress() * tam) - bytes_subidos
+                        if nuevos_bytes > 0:
+                            pbar.update(nuevos_bytes)
+                            bytes_subidos += nuevos_bytes
+
+            print(f"\nBackup subido. ID: {response.get('id')}")
+            break
         except HttpError as e:
             print(f"Error HTTP de la API: {e}")
             raise
