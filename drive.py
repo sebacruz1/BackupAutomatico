@@ -1,12 +1,16 @@
+#!/usr/bin/env python3
 from __future__ import print_function
-import os.path
+import os
+import time
+from datetime import datetime
+
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
-from datetime import datetime
-import os
 
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
@@ -15,7 +19,7 @@ def autenticar():
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
+        if creds and getattr(creds, "expired", False) and getattr(creds, "refresh_token", None):
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
@@ -29,40 +33,70 @@ def buscar_o_crear_carpeta(nombre_carpeta, service):
     resultados = service.files().list(q=query, fields="files(id, name)", spaces='drive').execute()
     archivos = resultados.get('files', [])
     if archivos:
-        return archivos[0]['id']  # usar la primera carpeta encontrada
+        return archivos[0]['id']
     else:
-        return crear_carpeta(nombre_carpeta, service)
-
-def crear_carpeta(nombre_carpeta, service):
-    carpeta = {
-        'name': nombre_carpeta,
-        'mimeType': 'application/vnd.google-apps.folder'
-    }
-    resultado = service.files().create(body=carpeta, fields='id').execute()
-    return resultado.get('id')
+        carpeta = {'name': nombre_carpeta, 'mimeType': 'application/vnd.google-apps.folder'}
+        res = service.files().create(body=carpeta, fields='id').execute()
+        return res.get('id')
 
 def subir_a_drive(ruta_archivo):
-    print("iniciando autenticación...")
+    print("Iniciando autenticación...")
     creds = autenticar()
     print("Autenticación exitosa.")
-    service = build('drive', 'v3', credentials=creds)
+
+    service = build('drive', 'v3', credentials=creds, cache_discovery=False)
+
+    if not os.path.exists(ruta_archivo):
+        raise FileNotFoundError(f"No existe el archivo: {ruta_archivo}")
 
     nombre_archivo = os.path.basename(ruta_archivo)
-    media = MediaFileUpload(ruta_archivo, mimetype='application/gzip')
+    tam = os.path.getsize(ruta_archivo)
+    print(f"Subiendo: {nombre_archivo} ({tam/1024/1024:.2f} MiB)")
+
     carpeta_id = buscar_o_crear_carpeta('Backups', service)
-    archivo = {
-        'name': nombre_archivo,
-        'parents': [carpeta_id]
-    }
 
-    resultado = service.files().create(body=archivo, media_body=media, fields='id').execute()
-    print(f"Backup subido a Google Drive. ID: {resultado.get('id')}")
+    # Subida reanudable en chunks (1 MiB para máxima robustez)
+    media = MediaFileUpload(
+        ruta_archivo,
+        mimetype='application/gzip',
+        chunksize=1 * 1024 * 1024,
+        resumable=True
+    )
 
+    metadata = {'name': nombre_archivo, 'parents': [carpeta_id]}
 
-print("Iniciando proceso de backup...")
-fecha = datetime.now().strftime('%d-%m-%Y-%H-%M')
-print(f"Fecha de backup: {fecha}")
-ruta = os.path.expanduser(f'~/backup/backup-{fecha}.tar.gz')
-print(f"Ruta del backup: {ruta}")
-print("Subiendo a Google Drive...")
-subir_a_drive(ruta)
+    def iniciar_sesion():
+        return service.files().create(body=metadata, media_body=media, fields='id')
+
+    intentos_sesion = 0
+    max_sesiones = 3
+    while True:
+        try:
+            request = iniciar_sesion()
+            response = None
+            ultimo_pct = -1
+            while response is None:
+                status, response = request.next_chunk(num_retries=5)
+            print(f"Backup subido. ID: {response.get('id')}")
+            break  # éxito
+        except HttpError as e:
+            print(f"Error HTTP de la API: {e}")
+            raise
+        except Exception as e:
+            if "RedirectMissingLocation" in str(e) and intentos_sesion < max_sesiones:
+                intentos_sesion += 1
+                print("Redirección inválida detectada. Re-iniciando sesión de subida...")
+                time.sleep(2)
+                continue
+            print(f"Error durante la subida: {e}")
+            raise
+
+if __name__ == "__main__":
+    print("Iniciando proceso de backup...")
+    fecha = datetime.now().strftime('%d-%m-%y')
+    print(f"Fecha de backup: {fecha}")
+    ruta = os.path.expanduser(f'~/backup/backup-{fecha}.tar.gz')
+    print(f"Ruta del backup: {ruta}")
+    print("Subiendo a Google Drive...")
+    subir_a_drive(ruta)
+

@@ -1,19 +1,26 @@
 #!/bin/bash
 
 clear
-echo "-----------------------------------"
 
 # Fecha para el nombre del backup
-FECHA=$(date +%d-%m-%Y-%H-%M)
+FECHA=$(date +%d-%m-%y)
 
 # Archivos y carpetas a respaldar
+# Aquí puedes agregar o quitar rutas según tus necesidades
 ORIGENES=(
     "$HOME/.ssh"
     "$HOME/Desktop"
-    "$HOME/Downloads"
+    "$HOME/Documents"
     "$HOME/.zsh_history"
     "$HOME/.zshrc"
     "$HOME/.vimrc"
+)
+
+# Carpetas a excluir
+# Aquí puedes agregar o quitar rutas según tus necesidades
+EXCLUDES=(
+    "--exclude=""$HOME/Documents/Roms"
+    "--exclude=""$HOME/Documents/ISOs"
 )
 
 # Nombre y destino del backup
@@ -22,8 +29,11 @@ DESTINO="$HOME/backup/$NOMBRE_BACKUP"
 mkdir -p "$HOME/backup"
 DIRECTORIO="$(pwd)"
 
-# Crear backup comprimido
-tar -czf "$DESTINO" "${ORIGENES[@]}"
+echo "-----------------------------------"
+
+
+tar -czf "$DESTINO" "${EXCLUDES[@]}" "${ORIGENES[@]}"
+
 if [ $? -eq 0 ]; then
     echo "Backup creado exitosamente en $DESTINO"
 else
@@ -42,6 +52,7 @@ source "$DIRECTORIO/.venv/bin/activate"
 
 # Ejecutar el script drive.py desde el directorio del proyecto
 cd "$DIRECTORIO" || exit
+
 python3 drive.py
 
 if [ $? -eq 0 ]; then
