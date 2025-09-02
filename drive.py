@@ -8,7 +8,7 @@ from googleapiclient.http import MediaFileUpload
 from datetime import datetime
 import os
 
-SCOPES = ['https://www.googleapis.com/auth/drive.file'] 
+SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
 def autenticar():
     creds = None
@@ -52,7 +52,7 @@ def subir_a_drive(ruta_archivo):
     carpeta_id = buscar_o_crear_carpeta('Backups', service)
     archivo = {
         'name': nombre_archivo,
-        'parents': [carpeta_id]  
+        'parents': [carpeta_id]
     }
 
     resultado = service.files().create(body=archivo, media_body=media, fields='id').execute()
