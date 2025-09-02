@@ -59,7 +59,7 @@ def subir_a_drive(ruta_archivo):
     media = MediaFileUpload(
         ruta_archivo,
         mimetype='application/gzip',
-        chunksize=1 * 1024 * 1024,
+        chunksize=32 * 1024 * 1024,
         resumable=True
     )
 
